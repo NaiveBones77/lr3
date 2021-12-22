@@ -23,8 +23,8 @@ Aircraft::Aircraft(double longitude, double latitude, double V0, double A0) {
 	Vz = 0;
 	PPMs.insert(PPMs.end(), std::vector<double>{20000, 0, 20000});
 	PPMs.insert(PPMs.end(), std::vector<double>{20000, 0, 50000});
-	PPMs.insert(PPMs.end(), std::vector<double>{10000, 0, 100000});
-	PPMs.insert(PPMs.end(), std::vector<double>{-10000, 0, 150000});
+	//PPMs.insert(PPMs.end(), std::vector<double>{10000, 0, 100000});
+	//PPMs.insert(PPMs.end(), std::vector<double>{-10000, 0, 150000});
 	tr.setDefault(longitude, latitude);
 	ASP bomb0(startSK, std::vector <double> {Vx, 0, Vz});
 	ASP bomb1(startSK, std::vector <double> {Vx, 0, Vz});
@@ -154,7 +154,7 @@ void Aircraft::run2()
 	fillSNS(SNS_vec);
 	fillINS(INS_vec);
 
-	if (countOperation % 200 == 0)
+	if (countOperation % 50 == 0)
 	{
 		file1.open("123.kml", std::ios::app);
 		tr.WriteFile(file1, 2, std::vector<double> {latitude, longitude, 10000});
@@ -210,8 +210,6 @@ void Aircraft::startBomb()
 		bomb.setX(startSK);
 		bomb.setV(std::vector<double> {V*cos(A), 0, V*sin(A)});
 		bomb.Ab_f();
-		if (index == 1)
-			printf("2");
 		if ((abs(tr.getDistance(std::vector<double> {startSK[0], startSK[2]}, std::vector<double>{PPMs[index][0], PPMs[index][2]}) - bomb.A)  
 			 < 100) && (index == curIndexBomb))
 		{
@@ -227,6 +225,8 @@ void Aircraft::startBomb()
 			//bomb.setName(curIndexBomb);
 			dp_integrator->run(&bomb);
 			bomb.insertGeogr();
+			bomb.setName(index);
+			tr.WriteBomb(file1, bomb.name, bomb.coordinatesG);
 			//bomb.run();
 
 			bombs[curIndexBomb].flag = false;

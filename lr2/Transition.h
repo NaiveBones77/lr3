@@ -110,5 +110,6 @@ public:
 	double getAngleFromScalars(std::vector<double> x1, std::vector<double> x2);
 	double getDistance(std::vector<double> x1, std::vector<double> x2);
 	void WriteFile(std::ofstream& file1, int flag, std::vector<double> vec);
+	void WriteBomb(std::ofstream& file2, std::string name, std::vector<std::vector<double>> cG);
 };
 

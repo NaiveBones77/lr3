@@ -39,6 +39,8 @@ public:
 
 	void getRP(const vector& X, long double t, vector& Y) const override;
 
+	void setName(int index);
+
 	void writeKML(std::vector<std::vector<double>> cG);
 
 	//void setName(int i);

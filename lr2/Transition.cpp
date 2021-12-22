@@ -215,6 +215,131 @@ void Transition::WriteFile(std::ofstream& file1, int flag, std::vector<double> v
 	}
 }
 
+void Transition::WriteBomb(std::ofstream& file2, std::string name, std::vector<std::vector<double>> cG)
+{
+	file2.clear();
+	file2.open(name, std::ios::out);
+
+	file2 << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+	file2 << "\n<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">";
+	file2 << "\n<Document>";
+	file2 << "\n    ";
+	file2 << "<name>Шереметьево-Хитроу.kml</name>";
+	file2 << "\n    ";
+	file2 << "<Style id=\"s_ylw-pushpin\">";
+	file2 << "\n        ";
+	file2 << "<IconStyle>";
+	file2 << "\n            ";
+	file2 << "<scale>1.1</scale>";
+	file2 << "\n            ";
+	file2 << "<Icon>";
+	file2 << "\n                ";
+	file2 << "<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>";
+	file2 << "\n            ";
+	file2 << "</Icon>";
+	file2 << "\n            ";
+	file2 << "<hotSpot x=\"20\" y=\"2\" xunits=\"pixels\" yunits=\"pixels\"/>";
+	file2 << "\n        ";
+	file2 << "</IconStyle>";
+	file2 << "\n        ";
+	file2 << "<LineStyle>";
+	file2 << "\n            ";
+	file2 << "<color>ffffad41</color>";
+	file2 << "\n        ";
+	file2 << "</LineStyle>";
+	file2 << "\n    ";
+	file2 << "</Style>";
+	file2 << "\n    ";
+	file2 << "<Style id=\"s_ylw-pushpin_hl\">";
+	file2 << "\n        ";
+	file2 << "<IconStyle>";
+	file2 << "\n            ";
+	file2 << "<scale>1.3</scale>";
+	file2 << "\n            ";
+	file2 << "<Icon>";
+	file2 << "\n                ";
+	file2 << "<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>";
+	file2 << "\n            ";
+	file2 << "</Icon>";
+	file2 << "\n            ";
+	file2 << "<hotSpot x=\"20\" y=\"2\" xunits=\"pixels\" yunits=\"pixels\"/>";
+	file2 << "\n        ";
+	file2 << "</IconStyle>";
+	file2 << "\n        ";
+	file2 << "<LineStyle>";
+	file2 << "\n            ";
+	file2 << "<color>ffffad41</color>";
+	file2 << "\n        ";
+	file2 << "</LineStyle>";
+	file2 << "\n    ";
+	file2 << "</Style>";
+	file2 << "\n    ";
+	file2 << "<StyleMap id=\"m_ylw-pushpin\">";
+	file2 << "\n        ";
+	file2 << "<Pair>";
+	file2 << "\n            ";
+	file2 << "<key>normal</key>";
+	file2 << "\n            ";
+	file2 << "<styleUrl>#s_ylw-pushpin</styleUrl>";
+	file2 << "\n        ";
+	file2 << "</Pair>";
+	file2 << "\n        ";
+	file2 << "<Pair>";
+	file2 << "\n            ";
+	file2 << "<key>highlight</key>";
+	file2 << "\n            ";
+	file2 << "<styleUrl>#s_ylw-pushpin_hl</styleUrl>";
+	file2 << "\n        ";
+	file2 << "</Pair>";
+	file2 << "\n    ";
+	file2 << "</StyleMap>";
+	file2 << "\n    ";
+	file2 << "<Placemark>";
+	file2 << "\n        ";
+	file2 << "<name>Шереметьево-Хитроу</name>";
+	file2 << "\n        ";
+	file2 << "<styleUrl>#m_ylw-pushpin</styleUrl>";
+	file2 << "\n        ";
+	file2 << "<LineString>";
+	file2 << "\n            ";
+	file2 << "<tessellate>1</tessellate>";
+	file2 << "\n            ";
+	file2 << "<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>";
+	file2 << "\n            ";
+	file2 << "<coordinates>";
+	file2 << "\n                ";
+
+	int i = 0;
+	int n = cG.size();
+	int k = int(round(n / 10));
+	while (i < n)
+	{
+		
+		file2 << cG[i][0]; file2 << ",";
+		file2 << cG[i][1]; file2 << ",";
+		file2 << cG[i][2]; file2 << " ";
+
+		if (i == n - 1)
+			break;
+
+		i += k;
+		if (i > n)
+			i = n-1;
+	}
+
+
+	file2 << "\n            ";
+	file2 << "</coordinates>";
+	file2 << "\n        ";
+	file2 << "</LineString>";
+	file2 << "\n    ";
+	file2 << "</Placemark>";
+	file2 << "\n</Document>";
+	file2 << "\n</kml>";
+
+	file2.close();
+}
+
 double Transition::fromGrad2Rad(double angle)
 {
 	return (angle * PI) / 180;

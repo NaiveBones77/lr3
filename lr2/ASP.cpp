@@ -80,6 +80,12 @@ void ASP::getRP(const vector& X, long double t, vector& Y) const
 	Y[3] = 0;
 	Y[4] = -g;
 	Y[5] = 0;
+}
 
-	
+void ASP::setName(int index)
+{
+	std::string name = "bomb";
+	std::string ind = std::to_string(index);
+	std::string endN = ".kml";
+	this->name = name + ind + endN;
 }
