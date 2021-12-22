@@ -1,3 +1,4 @@
+#pragma once
 #include "integrator.h"
 
 dormandPrinceIntgrator::dormandPrinceIntgrator(): IIntegrator(){

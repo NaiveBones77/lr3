@@ -7,6 +7,7 @@
 #include <thread>
 #include "Timer.cpp"
 #include <list>
+#include "integrator.h";
 
 
 Aircraft::Aircraft(double longitude, double latitude, double V0, double A0) {
@@ -25,11 +26,11 @@ Aircraft::Aircraft(double longitude, double latitude, double V0, double A0) {
 	PPMs.insert(PPMs.end(), std::vector<double>{10000, 0, 100000});
 	PPMs.insert(PPMs.end(), std::vector<double>{-10000, 0, 150000});
 	tr.setDefault(longitude, latitude);
-	ASP bomb(startSK, std::vector <double> {Vx, 0, Vz});
+	ASP bomb0(startSK, std::vector <double> {Vx, 0, Vz});
 	ASP bomb1(startSK, std::vector <double> {Vx, 0, Vz});
 	ASP bomb2(startSK, std::vector <double> {Vx, 0, Vz});
 	ASP bomb3(startSK, std::vector <double> {Vx, 0, Vz});
-	bombs.push_back(bomb);
+	bombs.push_back(bomb0);
 	bombs.push_back(bomb1);
 	bombs.push_back(bomb2);
 	bombs.push_back(bomb3);
@@ -140,11 +141,7 @@ void Aircraft::run2()
 		coordinatesG = tr.fromStart2Geogr(startSK);
 		latitude = coordinatesG[0];
 		longitude = coordinatesG[1];
-		//B = f(T(H));
-		// //H = H0 - gt^2/2
-		//if (abs(tr.getDistance(std::vector<double> {startSK[0], startSK[2]}, std::vector<double>{PPMs[countPPM][0], PPMs[countPPM][2]}) -B(T(H)) < 200)
-		//spisokB.add(B*cos(A), B*sin(A), H));
-		//
+
 		if (tr.getDistance(std::vector<double> {startSK[0], startSK[2]}, std::vector<double>{PPMs[index][0], PPMs[index][2]}) < 500)
 		{
 			index += 1;
@@ -211,7 +208,7 @@ void Aircraft::startBomb()
 	{
 		ASP bomb = bombs[curIndexBomb];
 		bomb.setX(startSK);
-		bomb.setV(vector<double> {V*cos(A), 0, V*sin(A)});
+		bomb.setV(std::vector<double> {V*cos(A), 0, V*sin(A)});
 		bomb.Ab_f();
 		if (index == 1)
 			printf("2");
@@ -219,8 +216,19 @@ void Aircraft::startBomb()
 			 < 100) && (index == curIndexBomb))
 		{
 			bomb.tr.setDefault(coordinatesG[0], coordinatesG[1]);
-			bomb.run();
-			//timer.add(std::chrono::microseconds(1000), [&]() {run_asp(bomb); });
+			std::vector<float> initial{ (float)startSK[0], (float)startSK[1], (float)startSK[2], (float)Vx, 0, (float)Vz };
+			bomb.setInitialConditions(initial);
+			bomb.setSampIncrement(0.1);
+			bomb.setT_st(0);
+			bomb.setT_fin(bomb.T_h);
+			
+			dormandPrinceIntgrator* dp_integrator = new dormandPrinceIntgrator();
+
+			//bomb.setName(curIndexBomb);
+			dp_integrator->run(&bomb);
+			bomb.insertGeogr();
+			//bomb.run();
+
 			bombs[curIndexBomb].flag = false;
 			if (curIndexBomb > bombs.size())
 			{
@@ -234,7 +242,7 @@ void Aircraft::startBomb()
 	
 }
 
-void run_asp(ASP& asp)
+void Aircraft::run_asp(ASP& asp)
 {
 	asp.run();
 }

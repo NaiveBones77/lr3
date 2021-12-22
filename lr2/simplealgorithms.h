@@ -1,5 +1,7 @@
+
 #ifndef SIMPLEALGORITHMS_H
 #define SIMPLEALGORITHMS_H
+
 
 #include <math.h>
 #include "linearalgebra.h"

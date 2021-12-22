@@ -1,13 +1,13 @@
 #include "ASP.h"
 #include <cmath>
+#include <string>
+
 
 void ASP::run()
 {
 	int ind = 0;
 	while (H > 0)
 	{
-		if (ind == 2000)
-			printf("2000");
 		//coordinates[1] = coordinates[1] + V[1]*dt - g * pow(t, 2) *dt / 2;
 		V[1] = V[1] - g * dt;
 
@@ -30,9 +30,17 @@ ASP::ASP(std::vector<double> coords, std::vector<double> V0)
 	this->V = V0;
 }
 
-ASP::ASP() :IMathModel()
+ASP::ASP() {};
+
+void ASP::setInitialConditions(std::vector<float> vec)
 {
-	
+	X0.resize(6);
+	X0[0] = vec[0];
+	X0[1] = vec[1];
+	X0[2] = vec[2];
+	X0[3] = vec[3];
+	X0[4] = vec[4];
+	X0[5] = vec[5];
 }
 
 void ASP::Ab_f()
@@ -51,6 +59,18 @@ void ASP::setV(std::vector<double> V)
 	this->V = V;
 }
 
+void ASP::insertGeogr()
+{
+	for (int i = 0; i < resMatrix.rowsCount(); i++)
+	{
+		auto X = resMatrix(i,0);
+		auto Y = resMatrix(i,1);
+		auto Z = resMatrix(i,2);
+		std::vector<double> vec{ (double)X, (double)Y, (double)Z };
+		coordinatesG.insert(coordinatesG.end(), tr.fromStart2Geogr(vec));
+	}
+}
+
 void ASP::getRP(const vector& X, long double t, vector& Y) const
 {
 	Y.resize(X.size());
@@ -60,6 +80,6 @@ void ASP::getRP(const vector& X, long double t, vector& Y) const
 	Y[3] = 0;
 	Y[4] = -g;
 	Y[5] = 0;
+
+	
 }
-
-

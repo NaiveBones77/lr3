@@ -7,6 +7,7 @@
 
 #include <WinSock2.h>
 #include "Aircraft.h"
+#include "integrator.h"
 #pragma comment(lib,"Ws2_32.lib")
 
 #define PORT 12346
@@ -115,6 +116,7 @@ int main()
     a1.sns.bindPort(_s, _destAddr);
 
     //a1.run();
+    
 
     timer.add(std::chrono::microseconds(1000), [&]() {test_run(a1); });
     timer.add(std::chrono::microseconds(1000), [&]() {test_ops(a1); });

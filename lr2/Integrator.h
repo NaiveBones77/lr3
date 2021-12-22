@@ -1,5 +1,4 @@
-#ifndef IINTQRATOR_H
-#define IINTQRATOR_H
+#pragma once
 
 #include "mathmodel.h"
 #include "simplealgorithms.h"
@@ -29,4 +28,3 @@ public:
     void run(IMathModel *model);
 };
 
-#endif // IINTQRATOR_H
