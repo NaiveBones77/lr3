@@ -3,8 +3,11 @@
 
 void ASP::run()
 {
+	int ind = 0;
 	while (H > 0)
 	{
+		if (ind == 2000)
+			printf("2000");
 		//coordinates[1] = coordinates[1] + V[1]*dt - g * pow(t, 2) *dt / 2;
 		V[1] = V[1] - g * dt;
 
@@ -16,6 +19,7 @@ void ASP::run()
 		coordinatesList.insert(coordinatesList.end(), coordinates);
 		coordinatesG.insert(coordinatesG.end(), tr.fromStart2Geogr(coordinates));
 		t += dt;
+		ind += 1;
 	}
 }
 
@@ -27,7 +31,8 @@ ASP::ASP(std::vector<double> coords, std::vector<double> V0)
 
 void ASP::Ab_f()
 {
-	A = sqrt(pow(V[0], 2) + pow(V[2], 2)) * (sqrt(2 * H) / g);
+	A = sqrt(pow(V[0], 2) + pow(V[2], 2)) * (sqrt(2 * H / g));
+	T_h = (sqrt(2 * H / g));
 }
 
 void ASP::setX(std::vector<double> X)
