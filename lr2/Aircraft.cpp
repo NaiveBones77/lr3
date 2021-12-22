@@ -21,11 +21,19 @@ Aircraft::Aircraft(double longitude, double latitude, double V0, double A0) {
 	yaw = 0;
 	Vx = 0;
 	Vz = 0;
+	tr.setDefault(longitude, latitude);
 	PPMs.insert(PPMs.end(), std::vector<double>{20000, 0, 20000});
 	PPMs.insert(PPMs.end(), std::vector<double>{20000, 0, 50000});
 	//PPMs.insert(PPMs.end(), std::vector<double>{10000, 0, 100000});
 	//PPMs.insert(PPMs.end(), std::vector<double>{-10000, 0, 150000});
-	tr.setDefault(longitude, latitude);
+	PPMsG.insert(PPMsG.end(), tr.fromStart2Geogr(std::vector<double>{20000, 0, 20000}));
+	PPMsG.insert(PPMsG.end(), tr.fromStart2Geogr(std::vector<double>{20000, 0, 50000}));
+	PPMsG.insert(PPMsG.end(), tr.fromStart2Geogr(std::vector<double>{10000, 0, 100000}));
+	PPMsG.insert(PPMsG.end(), tr.fromStart2Geogr(std::vector<double>{-10000, 0, 150000}));
+	tr.WritePPM(file1, std::string("PPM1.kml"), PPMsG[0]);
+	tr.WritePPM(file1, std::string("PPM2.kml"), PPMsG[1]);
+	tr.WritePPM(file1, std::string("PPM3.kml"), PPMsG[2]);
+	tr.WritePPM(file1, std::string("PPM4.kml"), PPMsG[3]);
 	ASP bomb0(startSK, std::vector <double> {Vx, 0, Vz});
 	ASP bomb1(startSK, std::vector <double> {Vx, 0, Vz});
 	ASP bomb2(startSK, std::vector <double> {Vx, 0, Vz});
@@ -34,11 +42,7 @@ Aircraft::Aircraft(double longitude, double latitude, double V0, double A0) {
 	bombs.push_back(bomb1);
 	bombs.push_back(bomb2);
 	bombs.push_back(bomb3);
-	//bombs = { bomb , bomb1, bomb2, bomb3 };
-	//bombs.insert(bombs.end(), bomb);
-	//bombs.insert(bombs.end(), bomb1);
-	//bombs.insert(bombs.end(), bomb2);
-	//bombs.insert(bombs.end(), bomb3);
+
 	SNS sns(Val("высота", 10, 20, 65536),
 			Val("HDOP", 10.0, 15, 512),
 			Val("VDOP", 10.0, 15, 512),
@@ -204,7 +208,7 @@ void Aircraft::startBomb()
 {
 	mutex.lock();
 	Timer timer;
-	if (bombs[curIndexBomb].flag)
+	if ((curIndexBomb < bombs.size()) && bombs[curIndexBomb].flag)
 	{
 		ASP bomb = bombs[curIndexBomb];
 		bomb.setX(startSK);
@@ -213,7 +217,7 @@ void Aircraft::startBomb()
 		if ((abs(tr.getDistance(std::vector<double> {startSK[0], startSK[2]}, std::vector<double>{PPMs[index][0], PPMs[index][2]}) - bomb.A)  
 			 < 100) && (index == curIndexBomb))
 		{
-			bomb.tr.setDefault(coordinatesG[0], coordinatesG[1]);
+			//bomb.tr.setDefault(coordinatesG[0], coordinatesG[1]);
 			std::vector<float> initial{ (float)startSK[0], (float)startSK[1], (float)startSK[2], (float)Vx, 0, (float)Vz };
 			bomb.setInitialConditions(initial);
 			bomb.setSampIncrement(0.1);
@@ -232,12 +236,18 @@ void Aircraft::startBomb()
 			bombs[curIndexBomb].flag = false;
 			if (curIndexBomb > bombs.size())
 			{
-
+				
 			}
 			else
 				curIndexBomb += 1;
 		}
 	}
+	if (curIndexBomb == 2)
+	{
+		tr.writeAngles(file1, std::string("Angles.txt"), thetaList, AList);
+		curIndexBomb = 1000;
+	}
+		
 	mutex.unlock();
 	
 }

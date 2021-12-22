@@ -340,6 +340,124 @@ void Transition::WriteBomb(std::ofstream& file2, std::string name, std::vector<s
 	file2.close();
 }
 
+void Transition::writeAngles(std::ofstream& fileA, std::string name, std::vector <double> thetaList, std::vector<double> AList) {
+	int i = 0;
+	fileA.open("Angles.txt", std::ios::out);
+	fileA << "Номер операции" << "      " << "Угол элевации" << "       " << "Угол курса" << std::endl;
+	while (i < thetaList.size()) {
+		fileA << i << "                   " << thetaList[i] << "               " << AList[i] << std::endl; 
+		i++;
+	}
+	fileA.close();
+}
+
+void Transition::WritePPM(std::ofstream& file3, std::string name, std::vector<double> cG)
+{
+	file3.clear();
+	file3.open(name, std::ios::out);
+
+	file3 << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+	file3 << "\n<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">";
+	file3 << "\n<Document>";
+	file3 << "\n    ";
+	file3 << "<name>PPM.kml</name>";
+	file3 << "\n    ";
+	file3 << "<StyleMap id=\"m_ylw-pushpin\">";
+	file3 << "\n        ";
+	file3 << "<Pair>";
+	file3 << "\n            ";
+	file3 << "<key>normal</key>";
+	file3 << "\n            ";
+	file3 << "<styleUrl>#s_ylw-pushpin</styleUrl>";
+	file3 << "\n        ";
+	file3 << "</Pair>";
+	file3 << "\n        ";
+	file3 << "<Pair>";
+	file3 << "\n            ";
+	file3 << "<key>highlight</key>";
+	file3 << "\n            ";
+	file3 << "<styleUrl>#s_ylw-pushpin_hl</styleUrl>";
+	file3 << "\n        ";
+	file3 << "</Pair>";
+	file3 << "\n    ";
+	file3 << "</StyleMap>";
+	file3 << "\n    ";
+	file3 << "<Style id=\"s_ylw-pushpin\">";
+	file3 << "\n        ";
+	file3 << "<IconStyle>";
+	file3 << "\n            ";
+	file3 << "<scale>1.1</scale>";
+	file3 << "\n            ";
+	file3 << "<Icon>";
+	file3 << "\n                ";
+	file3 << "<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>";
+	file3 << "\n            ";
+	file3 << "</Icon>";
+	file3 << "\n            ";
+	file3 << "<hotSpot x=\"20\" y=\"2\" xunits=\"pixels\" yunits=\"pixels\"/>";
+	file3 << "\n        ";
+	file3 << "</IconStyle>";
+	file3 << "\n    ";
+	file3 << "</Style>";
+	file3 << "\n    ";
+	file3 << "<Style id=\"s_ylw-pushpin_hl\">";
+	file3 << "\n        ";
+	file3 << "<IconStyle>";
+	file3 << "\n            ";
+	file3 << "<scale>1.3</scale>";
+	file3 << "\n            ";
+	file3 << "<Icon>";
+	file3 << "\n                ";
+	file3 << "<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>";
+	file3 << "\n            ";
+	file3 << "</Icon>";
+	file3 << "\n            ";
+	file3 << "<hotSpot x=\"20\" y=\"2\" xunits=\"pixels\" yunits=\"pixels\"/>";
+	file3 << "\n        ";
+	file3 << "</IconStyle>";
+	file3 << "\n    ";
+	file3 << "</Style>";
+	file3 << "\n    ";
+	file3 << "<Placemark>";
+	file3 << "\n        ";
+	file3 << "<name>PPM</name>";
+	file3 << "\n        ";
+	file3 << "<styleUrl>#m_ylw-pushpin</styleUrl>";
+	file3 << "\n        ";
+	file3 << "<Polygon>";
+	file3 << "\n            ";
+	file3 << "<tessellate>1</tessellate>";
+	file3 << "\n            ";
+	file3 << "<outerBoundaryIs>";
+	file3 << "\n                ";
+	file3 << "<LinearRing>";
+	file3 << "\n                    ";
+	file3 << "<coordinates>";
+	file3 << "\n                        ";
+
+	file3 << cG[0]; file3 << ",";
+	file3 << cG[1]; file3 << ",";
+	file3 << cG[2]; file3 << " ";
+	file3 << cG[0]; file3 << ",";
+	file3 << cG[1]; file3 << ",";
+	file3 << cG[2]; file3 << " ";
+
+	file3 << "\n                    ";
+	file3 << "</coordinates>";
+	file3 << "\n                ";
+	file3 << "</LinearRing>";
+	file3 << "\n            ";
+	file3 << "</outerBoundaryIs>";
+	file3 << "\n        ";
+	file3 << "</Polygon>";
+	file3 << "\n    ";
+	file3 << "</Placemark>";
+	file3 << "\n</Document>";
+	file3 << "\n</kml>";
+
+	file3.close();
+}
+
 double Transition::fromGrad2Rad(double angle)
 {
 	return (angle * PI) / 180;

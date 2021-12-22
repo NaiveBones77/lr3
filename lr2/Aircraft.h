@@ -9,6 +9,7 @@
 #include "ASP.h"
 #include <list>
 #include "integrator.h";	
+#include <string>
 
 
 
@@ -34,6 +35,7 @@ private:
 	std::vector <std::vector<double>> coordinates;		//координаты ЛА в стартовой СК
 	std::vector <double> coordinatesG;				//координаты ЛА в географической СК
 	std::vector <std::vector<double>> PPMs;				//координаты ППМов в стартовой СК
+	std::vector <std::vector<double>> PPMsG;				//координаты ППМов в географической СК
 
 	std::vector <double> Xpr = {0};					//Произвоная по рысканью
 	int index = 0;								//индекс элемента из ППМ
