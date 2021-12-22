@@ -145,7 +145,7 @@ void Aircraft::run2()
 		//if (abs(tr.getDistance(std::vector<double> {startSK[0], startSK[2]}, std::vector<double>{PPMs[countPPM][0], PPMs[countPPM][2]}) -B(T(H)) < 200)
 		//spisokB.add(B*cos(A), B*sin(A), H));
 		//
-		if (tr.getDistance(std::vector<double> {startSK[0], startSK[2]}, std::vector<double>{PPMs[countPPM][0], PPMs[countPPM][2]}) < 500)
+		if (tr.getDistance(std::vector<double> {startSK[0], startSK[2]}, std::vector<double>{PPMs[index][0], PPMs[index][2]}) < 500)
 		{
 			index += 1;
 		}
@@ -205,6 +205,7 @@ void Aircraft::OPS2()
 
 void Aircraft::startBomb()
 {
+	mutex.lock();
 	Timer timer;
 	if (bombs[curIndexBomb].flag)
 	{
@@ -212,7 +213,10 @@ void Aircraft::startBomb()
 		bomb.setX(startSK);
 		bomb.setV(vector<double> {V*cos(A), 0, V*sin(A)});
 		bomb.Ab_f();
-		if (abs(tr.getDistance(std::vector<double> {startSK[0], startSK[2]}, std::vector<double>{PPMs[countPPM][0], PPMs[countPPM][2]}) - bomb.A) < 100)
+		if (index == 1)
+			printf("2");
+		if ((abs(tr.getDistance(std::vector<double> {startSK[0], startSK[2]}, std::vector<double>{PPMs[index][0], PPMs[index][2]}) - bomb.A)  
+			 < 100) && (index == curIndexBomb))
 		{
 			bomb.tr.setDefault(coordinatesG[0], coordinatesG[1]);
 			bomb.run();
@@ -226,6 +230,7 @@ void Aircraft::startBomb()
 				curIndexBomb += 1;
 		}
 	}
+	mutex.unlock();
 	
 }
 

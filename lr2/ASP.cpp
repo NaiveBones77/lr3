@@ -21,12 +21,18 @@ void ASP::run()
 		t += dt;
 		ind += 1;
 	}
+
 }
 
 ASP::ASP(std::vector<double> coords, std::vector<double> V0)
 {
 	this->coordinates = coords;
 	this->V = V0;
+}
+
+ASP::ASP() :IMathModel()
+{
+	
 }
 
 void ASP::Ab_f()
@@ -44,3 +50,16 @@ void ASP::setV(std::vector<double> V)
 {
 	this->V = V;
 }
+
+void ASP::getRP(const vector& X, long double t, vector& Y) const
+{
+	Y.resize(X.size());
+	Y[0] = X[3];
+	Y[1] = X[4];
+	Y[2] = X[5];
+	Y[3] = 0;
+	Y[4] = -g;
+	Y[5] = 0;
+}
+
+

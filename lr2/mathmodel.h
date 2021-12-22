@@ -14,6 +14,7 @@ protected:
 public:
     IMathModel():sampIncrement(1e-1), t_st(0.0), t_fin(1.0), N(0){ resMatrix.resize(0, 0);}
     inline vector getInitialConditions() const {return X0;}
+    inline vector setInitialConditions(vector X0) { this->X0 = X0; };
     inline int getOrder()  {return X0.size();}
     inline long double getSampIncrement() const {return this->sampIncrement;}
     inline long double getT_st() const {return this->t_st;}
