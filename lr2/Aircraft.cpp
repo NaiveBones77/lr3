@@ -4,6 +4,10 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <thread>
+#include "Timer.cpp"
+#include <list>
+
 
 Aircraft::Aircraft(double longitude, double latitude, double V0, double A0) {
 
@@ -21,6 +25,19 @@ Aircraft::Aircraft(double longitude, double latitude, double V0, double A0) {
 	PPMs.insert(PPMs.end(), std::vector<double>{10000, 0, 100000});
 	PPMs.insert(PPMs.end(), std::vector<double>{-10000, 0, 150000});
 	tr.setDefault(longitude, latitude);
+	ASP bomb(startSK, std::vector <double> {Vx, 0, Vz});
+	ASP bomb1(startSK, std::vector <double> {Vx, 0, Vz});
+	ASP bomb2(startSK, std::vector <double> {Vx, 0, Vz});
+	ASP bomb3(startSK, std::vector <double> {Vx, 0, Vz});
+	bombs.push_back(bomb);
+	bombs.push_back(bomb1);
+	bombs.push_back(bomb2);
+	bombs.push_back(bomb3);
+	//bombs = { bomb , bomb1, bomb2, bomb3 };
+	//bombs.insert(bombs.end(), bomb);
+	//bombs.insert(bombs.end(), bomb1);
+	//bombs.insert(bombs.end(), bomb2);
+	//bombs.insert(bombs.end(), bomb3);
 	SNS sns(Val("высота", 10, 20, 65536),
 			Val("HDOP", 10.0, 15, 512),
 			Val("VDOP", 10.0, 15, 512),
@@ -51,6 +68,7 @@ Aircraft::Aircraft(double longitude, double latitude, double V0, double A0) {
 	file1.open("123.kml", std::ios::out);
 	tr.WriteFile(file1, 1, std::vector<double> {0, 0, 0});
 	file1.close();
+
 }
 
 Aircraft::Aircraft(){ }
@@ -72,6 +90,7 @@ void Aircraft::run()
 		coordinates.insert(coordinates.end(), startSK);
 		if (tr.getDistance(std::vector<double> {startSK[0], startSK[2]}, std::vector<double>{PPMs[countPPM][0], PPMs[countPPM][2]}) < 1000)
 		{
+
 			countPPM += 1;
 		}
 		
@@ -121,14 +140,15 @@ void Aircraft::run2()
 		coordinatesG = tr.fromStart2Geogr(startSK);
 		latitude = coordinatesG[0];
 		longitude = coordinatesG[1];
+		//B = f(T(H));
+		// //H = H0 - gt^2/2
+		//if (abs(tr.getDistance(std::vector<double> {startSK[0], startSK[2]}, std::vector<double>{PPMs[countPPM][0], PPMs[countPPM][2]}) -B(T(H)) < 200)
+		//spisokB.add(B*cos(A), B*sin(A), H));
+		//
 		if (tr.getDistance(std::vector<double> {startSK[0], startSK[2]}, std::vector<double>{PPMs[countPPM][0], PPMs[countPPM][2]}) < 500)
 		{
 			index += 1;
 		}
-		/*if (countOperation > 550)
-		{
-			printf("100");
-		}*/
 		countOperation += 1;
 		mutex.unlock();
 	}
@@ -183,7 +203,36 @@ void Aircraft::OPS2()
 	mutex.unlock();
 }
 
+void Aircraft::startBomb()
+{
+	Timer timer;
+	if (bombs[curIndexBomb].flag)
+	{
+		ASP bomb = bombs[curIndexBomb];
+		bomb.setX(startSK);
+		bomb.setV(vector<double> {V*cos(A), 0, V*sin(A)});
+		bomb.Ab_f();
+		if (abs(tr.getDistance(std::vector<double> {startSK[0], startSK[2]}, std::vector<double>{PPMs[countPPM][0], PPMs[countPPM][2]}) - bomb.A) < 100)
+		{
+			bomb.tr.setDefault(coordinatesG[0], coordinatesG[1]);
+			bomb.run();
+			//timer.add(std::chrono::microseconds(1000), [&]() {run_asp(bomb); });
+			bombs[curIndexBomb].flag = false;
+			if (curIndexBomb > bombs.size())
+			{
 
+			}
+			else
+				curIndexBomb += 1;
+		}
+	}
+	
+}
+
+void run_asp(ASP& asp)
+{
+	asp.run();
+}
 
 void Aircraft::fillSNS(std::vector<double> vec)
 {

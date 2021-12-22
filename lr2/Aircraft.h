@@ -6,6 +6,9 @@
 #include <mutex>
 #include <iostream>
 #include <fstream>
+#include "ASP.h"
+#include <list>
+
 using namespace std;
 
 
@@ -23,6 +26,10 @@ private:
 	vector <double> startSK = { 0,10000,0 };
 	vector <double> thetaList = { 0 };
 	vector <double> AList = { 0 };
+	vector <ASP> bombs;
+	int curIndexBomb = 0;
+	//std::list <ASP> bombs;
+	//list <ASP> ::iterator it = bombs.begin();
 
 	vector <vector<double>> coordinates;		//координаты ЛА в стартовой СК
 	vector <double> coordinatesG;				//координаты ЛА в географической СК
@@ -37,6 +44,7 @@ private:
 	double t = 0;
 	vector<double> distSP = { 3885000, 0 };		//м до сев. полюса от текущей точки
 
+
 public:
 	INS ins;
 	SNS sns;
@@ -49,7 +57,10 @@ public:
 
 	vector<double> OPS(int index);
 	void OPS2();
+	void startBomb();
 	void fillSNS(std::vector<double> vec);
 	void fillINS(std::vector<double> vec);
 
 };
+
+void run_asp(ASP& asp);

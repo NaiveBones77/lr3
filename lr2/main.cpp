@@ -26,6 +26,12 @@ void test_ops(Aircraft& a)
     a.OPS2();
 }
 
+void test_bomb(Aircraft& a)
+{
+    a.startBomb();
+}
+
+
 int main()
 {
 	setlocale(LC_ALL, "rus");
@@ -112,6 +118,8 @@ int main()
 
     timer.add(std::chrono::microseconds(1000), [&]() {test_run(a1); });
     timer.add(std::chrono::microseconds(1000), [&]() {test_ops(a1); });
+    timer.add(std::chrono::microseconds(1500), [&]() {test_bomb(a1); });
+
     int i = 0;
     while (true) { std::this_thread::sleep_for(std::chrono::seconds(20));/* i++;*/ };
 }

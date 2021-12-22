@@ -60,7 +60,7 @@ std::vector<double> Transition::fromStart2Geogr(std::vector<double> vec)
 			}
 		}
 	}
-	std::vector<double> res = { lambda, phi, 10000 };
+	std::vector<double> res = { lambda, phi, vec[1] };
 	return res;
 }
 

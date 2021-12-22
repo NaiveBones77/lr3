@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Aircraft.h" />
+    <ClInclude Include="ASP.h" />
     <ClInclude Include="INS.h" />
     <ClInclude Include="Integrator.h" />
     <ClInclude Include="protocol.h" />
@@ -149,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Aircraft.cpp" />
+    <ClCompile Include="ASP.cpp" />
     <ClCompile Include="INS.cpp" />
     <ClCompile Include="Integrator.cpp" />
     <ClCompile Include="main.cpp" />
